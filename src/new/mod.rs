@@ -11,13 +11,15 @@ use std::process::Command;
 use self::{
     bevy_features::{select_bevy_features, BevyFeature},
     compile_features::{register_compile_features, select_compile_features},
-    context::Context,
+    context::{AddDependency, Context},
     project_features::{register_project_features, select_project_features},
     utils::{add_dependency, create_file_with_content, run_cargo_fmt, save_main_rs},
 };
 
 pub fn new(folder_name: &str) {
     println!("Creating Bevy app `{folder_name}`...\n");
+    println!("- Use [Space] to select/unselect options");
+    println!("- Use [Enter] to confirm selection\n");
 
     let mut context = Context::new(folder_name);
     context.bevy_features = select_bevy_features();
@@ -66,6 +68,11 @@ fn create_files(context: &mut Context) {
 }
 
 fn add_dependencies(context: &mut Context) {
+    context.add_dependencies.push(AddDependency {
+        name: "bevy".to_string(),
+        features: vec![],
+    });
+
     for dependency in &context.add_dependencies {
         add_dependency(
             &context.folder_name,
