@@ -1,19 +1,23 @@
+mod dependencies;
 mod wasm;
 
-use self::wasm::add_wasm;
+use self::{dependencies::optimize_dependencies, wasm::add_wasm};
 
 use super::{context::Context, feature::Feature, utils::select_features};
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum CompileFeature {
-    FastCompileTimes,
+    OptimizeDependencies,
     WasmTarget,
 }
 
 impl Feature for CompileFeature {
     /// A [`Vec`] containing all available compile features.
     fn all() -> Vec<Self> {
-        vec![CompileFeature::FastCompileTimes, CompileFeature::WasmTarget]
+        vec![
+            CompileFeature::OptimizeDependencies,
+            CompileFeature::WasmTarget,
+        ]
     }
 
     /// Determines if a feature should be enabled by default.
@@ -25,7 +29,9 @@ impl Feature for CompileFeature {
 impl ToString for CompileFeature {
     fn to_string(&self) -> String {
         match self {
-            CompileFeature::FastCompileTimes => "Fast compile times".to_string(),
+            CompileFeature::OptimizeDependencies => {
+                "Optimize dependencies in debug mode".to_string()
+            }
             CompileFeature::WasmTarget => "Target WASM".to_string(),
         }
     }
@@ -41,5 +47,12 @@ pub fn register_compile_features(context: &mut Context) {
         .contains(&CompileFeature::WasmTarget)
     {
         add_wasm(context);
+    }
+
+    if context
+        .compile_features
+        .contains(&CompileFeature::OptimizeDependencies)
+    {
+        optimize_dependencies(context);
     }
 }
