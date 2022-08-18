@@ -51,20 +51,20 @@ pub fn save_cargo_toml(folder_name: &str, cargo_toml: Document) {
         .expect("Failed to write to `Cargo.toml`");
 }
 
-pub fn add_dependency(folder_name: &str, dependency: &str, features: Vec<&str>) {
+pub fn add_dependency(folder_name: &str, name: &str, features: Vec<String>) {
     let mut cmd = Command::new("cargo");
-    cmd.current_dir(folder_name).arg("add").arg(dependency);
+    cmd.current_dir(folder_name).arg("add").arg(name);
 
     if !features.is_empty() {
         cmd.args(&features);
     }
 
-    let status = cmd.status().unwrap_or_else(|_| {
-        panic!("Failed to add dependency {dependency} with features {features:?}")
-    });
+    let status = cmd
+        .status()
+        .unwrap_or_else(|_| panic!("Failed to add dependency {name} with features {features:?}"));
 
     if !status.success() {
-        panic!("Failed to add dependency {dependency} with features {features:?}");
+        panic!("Failed to add dependency {name} with features {features:?}");
     }
 }
 
