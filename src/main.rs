@@ -1,5 +1,6 @@
-use std::{env, process::Command};
+use std::{env, fs::File, io::Write, process::Command};
 
+use chrono::{Datelike, Local};
 use dialoguer::MultiSelect;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -33,7 +34,12 @@ impl ToString for Feature {
             Feature::FastCompileTimes => "Fast compile times".to_string(),
             Feature::AssetHotReloading => "Hot reloading for assets".to_string(),
             Feature::WasmSupport => "WASM support".to_string(),
-            Feature::MitApacheLicenses => "MIT and Apache-2.0 licenses".to_string(),
+            Feature::MitApacheLicenses => {
+                format!(
+                    "MIT and Apache-2.0 licenses (Copyright (c) {})",
+                    get_copyright_info()
+                )
+            }
         }
     }
 }
@@ -45,6 +51,10 @@ fn main() {
 
     let features = select_features();
     println!("{features:?}");
+
+    println!("{}", get_author().unwrap());
+
+    create_bevy_app(&folder_name, features);
 }
 
 fn select_features() -> Vec<Feature> {
@@ -72,7 +82,15 @@ fn select_features() -> Vec<Feature> {
         .collect()
 }
 
-fn create_project(folder_name: String) {
+fn create_bevy_app(folder_name: &str, features: Vec<Feature>) {
+    create_cargo_app(folder_name);
+
+    if features.contains(&Feature::MitApacheLicenses) {
+        add_licenses(folder_name)
+    }
+}
+
+fn create_cargo_app(folder_name: &str) {
     let output = Command::new("cargo")
         .arg("new")
         .arg(folder_name)
@@ -83,4 +101,62 @@ fn create_project(folder_name: String) {
     if !output {
         panic!("Failed to create the new project.");
     }
+}
+
+fn add_licenses(folder_name: &str) {
+    let mit_license = include_str!(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/assets/licenses/LICENSE-MIT"
+    ))
+    // MIT requires copyright info
+    .replace("{{copyright}}", &get_copyright_info());
+
+    let apache_license = include_str!(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/assets/licenses/LICENSE-APACHE"
+    ));
+
+    create_file_with_content(folder_name, "/LICENSE-MIT", mit_license).unwrap();
+    create_file_with_content(folder_name, "/LICENSE-APACHE", apache_license).unwrap();
+}
+
+fn create_file_with_content<C>(folder_name: &str, path: &str, content: C) -> std::io::Result<()>
+where
+    C: Into<String>,
+{
+    let full_path = format!("{folder_name}/{path}");
+    let mut file = File::create(full_path)?;
+    file.write_all(content.into().as_bytes())?;
+
+    Ok(())
+}
+
+fn get_copyright_info() -> String {
+    let year = get_year();
+
+    if let Some(author) = get_author() {
+        format!("{year} {author}")
+    } else {
+        year
+    }
+}
+
+/// Try to get the author from git.
+///
+/// `git config user.name`
+fn get_author() -> Option<String> {
+    // Run `git config user.name`
+    Command::new("git")
+        .arg("config")
+        .arg("user.name")
+        .output()
+        .ok()
+        .and_then(|output| String::from_utf8(output.stdout).ok())
+        // Remove surrounding whitespace
+        .map(|author| author.trim().to_string())
+}
+
+/// Get the current year.
+fn get_year() -> String {
+    Local::now().date().year().to_string()
 }
