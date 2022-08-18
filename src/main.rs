@@ -1,20 +1,20 @@
-use std::{
-    env,
-    io::{self, Write},
-    process::Command,
-};
+use std::{env, process::Command};
 
 fn main() {
     let folder_name = env::args()
         .nth(1)
         .expect("Please specify the name of the project.");
+}
 
+fn create_project(folder_name: String) {
     let output = Command::new("cargo")
         .arg("new")
         .arg(folder_name)
-        .output()
-        .expect("Failed to create the new project.");
+        .status()
+        .expect("Failed to create the new project.")
+        .success();
 
-    io::stdout().write_all(&output.stdout).unwrap();
-    io::stderr().write_all(&output.stderr).unwrap();
+    if !output {
+        panic!("Failed to create the new project.");
+    }
 }
