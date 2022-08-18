@@ -9,7 +9,7 @@ mod utils;
 use std::process::Command;
 
 use self::{
-    bevy_features::select_bevy_features,
+    bevy_features::{select_bevy_features, BevyFeature},
     compile_features::{register_compile_features, select_compile_features},
     context::Context,
     project_features::{register_project_features, select_project_features},
@@ -68,16 +68,37 @@ fn add_dependencies(context: &mut Context) {
 }
 
 fn adjust_main_file(context: &mut Context) {
-    let main_rs = r#"use bevy::prelude::*;
+    let mut builder_methods = vec![];
 
-    fn main() {
-        App::new()
-            .add_plugins(DefaultPlugins)
-            .run();
+    if context
+        .bevy_features
+        .contains(&BevyFeature::AssetHotReloading)
+    {
+        builder_methods.push(
+            "// Enable hot reloading
+            .insert_resource(AssetServerSettings {
+                watch_for_changes: true,
+                ..default()
+            })",
+        )
     }
-    "#;
 
-    save_main_rs(&context.folder_name, main_rs.to_string());
+    builder_methods.push(".add_plugins(DefaultPlugins)");
+    builder_methods.push(".run()");
+
+    // Note: The double braces are necessary to not collide with the format syntax
+    let main_rs = format!(
+        "use bevy::prelude::*;
+
+        fn main() {{
+            App::new()
+                {};
+        }}
+    ",
+        builder_methods.join("\n")
+    );
+
+    save_main_rs(&context.folder_name, main_rs);
     // Run `cargo fmt` to make sure that everything is tidy
     run_cargo_fmt(&context.folder_name);
 }
