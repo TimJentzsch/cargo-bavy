@@ -9,44 +9,6 @@ env:
   binary: "{{{project_name}}}"
 
 jobs:
-  # Build for wasm
-  release-wasm:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: little-core-labs/get-git-tag@v3.0.1
-        id: get_version
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: wasm32-unknown-unknown
-          override: true
-      - name: install wasm-bindgen-cli
-        run: |
-          cargo install wasm-bindgen-cli
-      - name: Build
-        run: |
-          cargo build --release --target wasm32-unknown-unknown
-      - name: Prepare package
-        run: |
-          wasm-bindgen --no-typescript --out-name bevy_game --out-dir wasm --target web target/wasm32-unknown-unknown/release/${{ env.binary }}.wasm
-          cp -r assets wasm/
-      - name: Package as a zip
-        uses: vimtor/action-zip@v1
-        with:
-          files: wasm
-          dest: ${{ env.binary }}.zip
-
-      - name: Upload binaries to release
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ env.binary }}.zip
-          asset_name: ${{ env.binary }}-wasm-${{ steps.get_version.outputs.tag }}.zip
-          tag: ${{ github.ref }}
-          overwrite: true
-
   # Build for Linux
   release-linux:
     runs-on: ubuntu-latest
@@ -157,3 +119,4 @@ jobs:
           asset_name: ${{ env.binary }}-macos-${{ steps.get_version.outputs.tag }}.dmg
           tag: ${{ github.ref }}
           overwrite: true
+{{{wasm}}}
