@@ -1,5 +1,5 @@
 [package]
-name = "bevy_mod_cli"
+name = "cargo-bevy-mod"
 version = "0.1.0"
 edition = "2021"
 
