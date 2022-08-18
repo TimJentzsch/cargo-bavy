@@ -1,6 +1,10 @@
-pub mod license;
+mod license;
+mod workflows;
 
-use self::license::add_licenses;
+use self::{
+    license::add_licenses,
+    workflows::{add_ci_workflow, add_release_workflow},
+};
 
 use super::{context::Context, feature::Feature, utils::select_features};
 use license::get_copyright_info;
@@ -8,12 +12,18 @@ use license::get_copyright_info;
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum ProjectFeature {
     MitApacheLicenses,
+    CiWorkflow,
+    ReleaseWorkflow,
 }
 
 impl Feature for ProjectFeature {
     /// A [`Vec`] containing all available project features.
     fn all() -> Vec<Self> {
-        vec![ProjectFeature::MitApacheLicenses]
+        vec![
+            ProjectFeature::MitApacheLicenses,
+            ProjectFeature::CiWorkflow,
+            ProjectFeature::ReleaseWorkflow,
+        ]
     }
 
     /// Determines if a feature should be enabled by default.
@@ -31,6 +41,8 @@ impl ToString for ProjectFeature {
                     get_copyright_info()
                 )
             }
+            ProjectFeature::CiWorkflow => "CI GitHub Actions workflow".to_string(),
+            ProjectFeature::ReleaseWorkflow => "Release GitHub Actions workflow".to_string(),
         }
     }
 }
@@ -45,5 +57,19 @@ pub fn register_project_features(context: &mut Context) {
         .contains(&ProjectFeature::MitApacheLicenses)
     {
         add_licenses(context);
+    }
+
+    if context
+        .project_features
+        .contains(&ProjectFeature::CiWorkflow)
+    {
+        add_ci_workflow(context);
+    }
+
+    if context
+        .project_features
+        .contains(&ProjectFeature::ReleaseWorkflow)
+    {
+        add_release_workflow(context);
     }
 }

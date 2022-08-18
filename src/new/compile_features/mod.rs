@@ -1,4 +1,4 @@
-pub mod wasm;
+mod wasm;
 
 use self::wasm::add_wasm;
 
