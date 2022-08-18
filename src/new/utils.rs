@@ -4,7 +4,10 @@ use std::{
     process::Command,
 };
 
+use dialoguer::MultiSelect;
 use toml_edit::Document;
+
+use super::feature::Feature;
 
 pub fn create_file_with_content<C>(folder_name: &str, path: &str, content: C) -> std::io::Result<()>
 where
@@ -54,4 +57,32 @@ pub fn add_dependency(folder_name: &str, dependency: &str, features: Vec<&str>) 
     if !status.success() {
         panic!("Failed to add dependency {dependency} with features {features:?}");
     }
+}
+
+pub fn select_features<F>(prompt: &str) -> Vec<F>
+where
+    F: Feature,
+{
+    println!("{prompt}");
+    println!("Press [Space] to toggle, [Enter] to confirm.");
+
+    let features = F::all();
+    let selection = MultiSelect::new()
+        .items(&features)
+        .defaults(
+            features
+                .iter()
+                .map(|feature| feature.enabled_by_default())
+                .collect::<Vec<bool>>()
+                .as_slice(),
+        )
+        .interact()
+        .unwrap();
+
+    features
+        .into_iter()
+        .enumerate()
+        .filter(|(idx, _)| selection.contains(idx))
+        .map(|(_idx, feature)| feature)
+        .collect()
 }

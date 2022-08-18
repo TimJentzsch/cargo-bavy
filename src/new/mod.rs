@@ -1,56 +1,45 @@
+mod bevy_features;
 pub mod cli;
+mod compile_features;
 mod feature;
-mod license;
+mod project_features;
 mod utils;
 
 use std::process::Command;
 
-use dialoguer::MultiSelect;
-use license::add_licenses;
-
-use feature::Feature;
-
-use self::utils::add_dependency;
+use self::{
+    bevy_features::{select_bevy_features, BevyFeature},
+    compile_features::{select_compile_features, CompileFeature},
+    project_features::{license::add_licenses, select_project_features, ProjectFeature},
+    utils::add_dependency,
+};
 
 pub fn new(folder_name: &str) {
-    let features = select_features();
+    let bevy_features = select_bevy_features();
+    let compile_features = select_compile_features();
+    let project_features = select_project_features();
 
-    create_bevy_app(folder_name, features);
+    create_bevy_app(
+        folder_name,
+        bevy_features,
+        compile_features,
+        project_features,
+    );
 }
 
-fn select_features() -> Vec<Feature> {
-    println!("Which features do you want?");
-    println!("([Space] to select, [Enter] to confirm.)");
-
-    let features = Feature::all();
-    let selection = MultiSelect::new()
-        .items(&features)
-        .defaults(
-            features
-                .iter()
-                .map(|feature| feature.enabled_by_default())
-                .collect::<Vec<bool>>()
-                .as_slice(),
-        )
-        .interact()
-        .unwrap();
-
-    features
-        .into_iter()
-        .enumerate()
-        .filter(|(idx, _)| selection.contains(idx))
-        .map(|(_idx, feature)| feature)
-        .collect()
-}
-
-fn create_bevy_app(folder_name: &str, features: Vec<Feature>) {
+fn create_bevy_app(
+    folder_name: &str,
+    bevy_features: Vec<BevyFeature>,
+    compile_features: Vec<CompileFeature>,
+    project_features: Vec<ProjectFeature>,
+) {
     create_cargo_app(folder_name);
 
-    if features.contains(&Feature::MitApacheLicenses) {
+    if project_features.contains(&ProjectFeature::MitApacheLicenses) {
         add_licenses(folder_name)
     }
 
-    add_dependencies(folder_name, features);
+    add_dependencies(folder_name);
 }
 
 fn create_cargo_app(folder_name: &str) {
@@ -66,6 +55,6 @@ fn create_cargo_app(folder_name: &str) {
     }
 }
 
-fn add_dependencies(folder_name: &str, _features: Vec<Feature>) {
+fn add_dependencies(folder_name: &str) {
     add_dependency(folder_name, "bevy", vec![]);
 }

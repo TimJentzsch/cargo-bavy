@@ -3,7 +3,7 @@ use std::process::Command;
 use chrono::{Datelike, Local};
 use toml_edit::value;
 
-use super::utils::{create_file_with_content, get_cargo_toml, save_cargo_toml};
+use crate::new::utils::{create_file_with_content, get_cargo_toml, save_cargo_toml};
 
 pub fn add_licenses(folder_name: &str) {
     let mit_license = include_str!(concat!(
