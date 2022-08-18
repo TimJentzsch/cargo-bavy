@@ -1,7 +1,13 @@
-use std::{env, fs::File, io::Write, process::Command};
+use std::{
+    env,
+    fs::{File, OpenOptions},
+    io::{Read, Write},
+    process::Command,
+};
 
 use chrono::{Datelike, Local};
 use dialoguer::MultiSelect;
+use toml_edit::{value, Document};
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 enum Feature {
@@ -50,9 +56,6 @@ fn main() {
         .expect("Please specify the name of the project.");
 
     let features = select_features();
-    println!("{features:?}");
-
-    println!("{}", get_author().unwrap());
 
     create_bevy_app(&folder_name, features);
 }
@@ -118,6 +121,8 @@ fn add_licenses(folder_name: &str) {
 
     create_file_with_content(folder_name, "/LICENSE-MIT", mit_license).unwrap();
     create_file_with_content(folder_name, "/LICENSE-APACHE", apache_license).unwrap();
+
+    set_cargo_toml_license(folder_name, "MIT OR Apache-2.0");
 }
 
 fn create_file_with_content<C>(folder_name: &str, path: &str, content: C) -> std::io::Result<()>
@@ -159,4 +164,32 @@ fn get_author() -> Option<String> {
 /// Get the current year.
 fn get_year() -> String {
     Local::now().date().year().to_string()
+}
+
+fn get_cargo_toml(folder_name: &str) -> Document {
+    let mut file =
+        File::open(format!("{folder_name}/Cargo.toml")).expect("Failed to open `Cargo.toml`");
+
+    let mut content = String::new();
+    file.read_to_string(&mut content)
+        .expect("Failed to read `Cargo.toml`");
+
+    content.parse().expect("Failed to parse `Cargo.toml`")
+}
+
+fn save_cargo_toml(folder_name: &str, cargo_toml: Document) {
+    let mut file = OpenOptions::new()
+        .write(true)
+        .open(format!("{folder_name}/Cargo.toml"))
+        .expect("Failed to open `Cargo.toml`");
+
+    let content = cargo_toml.to_string();
+    file.write_all(content.as_bytes())
+        .expect("Failed to write to `Cargo.toml`");
+}
+
+fn set_cargo_toml_license(folder_name: &str, license: &str) {
+    let mut cargo_toml = get_cargo_toml(folder_name);
+    cargo_toml["package"]["license"] = value(license);
+    save_cargo_toml(folder_name, cargo_toml);
 }

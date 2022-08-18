@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 chrono = "0.4.22"
 dialoguer = "0.10.2"
+toml_edit = "0.14.4"
