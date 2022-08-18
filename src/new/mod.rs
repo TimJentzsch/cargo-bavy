@@ -1,3 +1,4 @@
+pub mod cli;
 mod feature;
 mod license;
 mod utils;
