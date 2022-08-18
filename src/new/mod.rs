@@ -10,10 +10,10 @@ use std::process::Command;
 
 use self::{
     bevy_features::select_bevy_features,
-    compile_features::{select_compile_features, wasm::add_wasm, CompileFeature},
+    compile_features::{register_compile_features, select_compile_features},
     context::Context,
-    project_features::{license::add_licenses, select_project_features, ProjectFeature},
-    utils::add_dependency,
+    project_features::{register_project_features, select_project_features},
+    utils::{add_dependency, create_file_with_content},
 };
 
 pub fn new(folder_name: &str) {
@@ -22,27 +22,18 @@ pub fn new(folder_name: &str) {
     context.compile_features = select_compile_features();
     context.project_features = select_project_features();
 
-    create_bevy_app(&mut context);
+    create_bevy_app(context);
 }
 
-fn create_bevy_app(context: &mut Context) {
-    create_cargo_app(context);
+fn create_bevy_app(mut context: Context) {
+    create_cargo_app(&mut context);
 
-    if context
-        .project_features
-        .contains(&ProjectFeature::MitApacheLicenses)
-    {
-        add_licenses(&context.folder_name);
-    }
+    register_compile_features(&mut context);
+    register_project_features(&mut context);
 
-    if context
-        .compile_features
-        .contains(&CompileFeature::WasmTarget)
-    {
-        add_wasm(&context.folder_name);
-    }
-
-    add_dependencies(context);
+    create_files(&mut context);
+    add_dependencies(&mut context);
+    apply_extra_changes(context)
 }
 
 fn create_cargo_app(context: &mut Context) {
@@ -58,6 +49,13 @@ fn create_cargo_app(context: &mut Context) {
     }
 }
 
+fn create_files(context: &mut Context) {
+    for file in &context.create_files {
+        create_file_with_content(&context.folder_name, &file.path, file.content.clone())
+            .expect("Failed to create file");
+    }
+}
+
 fn add_dependencies(context: &mut Context) {
     for dependency in &context.add_dependencies {
         add_dependency(
@@ -65,5 +63,14 @@ fn add_dependencies(context: &mut Context) {
             &dependency.name,
             dependency.features.clone(),
         );
+    }
+}
+
+fn apply_extra_changes(mut context: Context) {
+    let extra_changes = context.extra_changes;
+    context.extra_changes = Vec::new();
+
+    for change in &extra_changes {
+        change(&context);
     }
 }

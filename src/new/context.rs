@@ -1,8 +1,8 @@
-use std::path::PathBuf;
-
 use super::{
     bevy_features::BevyFeature, compile_features::CompileFeature, project_features::ProjectFeature,
 };
+
+type ChangeFn = dyn Fn(&Context);
 
 pub struct Context {
     pub folder_name: String,
@@ -13,7 +13,7 @@ pub struct Context {
 
     pub create_files: Vec<CreateFile>,
     pub add_dependencies: Vec<AddDependency>,
-    pub extra_changes: Vec<Box<dyn Fn(&mut Context)>>,
+    pub extra_changes: Vec<Box<ChangeFn>>,
 }
 
 impl Context {
@@ -31,8 +31,21 @@ impl Context {
 }
 
 pub struct CreateFile {
-    pub path: PathBuf,
+    pub path: String,
     pub content: String,
+}
+
+impl CreateFile {
+    pub fn new<P, C>(path: P, content: C) -> Self
+    where
+        P: Into<String>,
+        C: Into<String>,
+    {
+        Self {
+            path: path.into(),
+            content: content.into(),
+        }
+    }
 }
 
 pub struct AddDependency {

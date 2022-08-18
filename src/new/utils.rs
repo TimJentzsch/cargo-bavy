@@ -10,11 +10,13 @@ use toml_edit::Document;
 
 use super::feature::Feature;
 
-pub fn create_file_with_content<C>(folder_name: &str, path: &str, content: C) -> std::io::Result<()>
+pub fn create_file_with_content<F, P, C>(folder_name: F, path: P, content: C) -> std::io::Result<()>
 where
+    F: Into<String>,
+    P: Into<String>,
     C: Into<String>,
 {
-    let full_path = PathBuf::from(format!("{folder_name}/{path}"));
+    let full_path = PathBuf::from(format!("{}/{}", folder_name.into(), path.into()));
 
     // Create the directory if it doesn't exist
     if let Some(dir_path) = full_path.parent() {

@@ -1,6 +1,8 @@
 pub mod license;
 
-use super::{feature::Feature, utils::select_features};
+use self::license::add_licenses;
+
+use super::{context::Context, feature::Feature, utils::select_features};
 use license::get_copyright_info;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -35,4 +37,8 @@ impl ToString for ProjectFeature {
 
 pub fn select_project_features() -> Vec<ProjectFeature> {
     select_features("Which compile features do you want?")
+}
+
+pub fn register_project_features(context: &mut Context) {
+    add_licenses(context);
 }

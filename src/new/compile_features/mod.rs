@@ -1,6 +1,8 @@
 pub mod wasm;
 
-use super::{feature::Feature, utils::select_features};
+use self::wasm::add_wasm;
+
+use super::{context::Context, feature::Feature, utils::select_features};
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum CompileFeature {
@@ -31,4 +33,8 @@ impl ToString for CompileFeature {
 
 pub fn select_compile_features() -> Vec<CompileFeature> {
     select_features("Which compile features do you want?")
+}
+
+pub fn register_compile_features(context: &mut Context) {
+    add_wasm(context);
 }
