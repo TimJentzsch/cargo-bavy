@@ -10,6 +10,8 @@ use license::add_licenses;
 
 use feature::Feature;
 
+use self::utils::add_dependency;
+
 pub fn new(folder_name: &str) {
     let features = select_features();
 
@@ -47,6 +49,8 @@ fn create_bevy_app(folder_name: &str, features: Vec<Feature>) {
     if features.contains(&Feature::MitApacheLicenses) {
         add_licenses(folder_name)
     }
+
+    add_dependencies(folder_name, features);
 }
 
 fn create_cargo_app(folder_name: &str) {
@@ -60,4 +64,8 @@ fn create_cargo_app(folder_name: &str) {
     if !output {
         panic!("Failed to create the new project.");
     }
+}
+
+fn add_dependencies(folder_name: &str, _features: Vec<Feature>) {
+    add_dependency(folder_name, "bevy", vec![]);
 }
