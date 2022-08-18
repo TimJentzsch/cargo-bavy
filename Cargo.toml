@@ -2,6 +2,11 @@
 name = "cargo-bevy-mod"
 version = "0.1.0"
 edition = "2021"
+description = "A third-party command line utility for the Bevy game engine."
+readme = "README.md"
+repository = "https://github.com/TimJentzsch/cargo-bevy-mod"
+categories = ["development-tools"]
+keywords = ["cargo-subcommand", "cli", "bevy"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
