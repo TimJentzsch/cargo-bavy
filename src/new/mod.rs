@@ -9,7 +9,7 @@ use std::process::Command;
 
 use self::{
     bevy_features::{select_bevy_features, BevyFeature},
-    compile_features::{select_compile_features, CompileFeature},
+    compile_features::{select_compile_features, wasm::add_wasm, CompileFeature},
     project_features::{license::add_licenses, select_project_features, ProjectFeature},
     utils::add_dependency,
 };
@@ -36,7 +36,11 @@ fn create_bevy_app(
     create_cargo_app(folder_name);
 
     if project_features.contains(&ProjectFeature::MitApacheLicenses) {
-        add_licenses(folder_name)
+        add_licenses(folder_name);
+    }
+
+    if compile_features.contains(&CompileFeature::WasmTarget) {
+        add_wasm(folder_name);
     }
 
     add_dependencies(folder_name);

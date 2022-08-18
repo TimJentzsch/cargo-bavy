@@ -1,18 +1,17 @@
+pub mod wasm;
+
 use super::{feature::Feature, utils::select_features};
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum CompileFeature {
     FastCompileTimes,
-    WasmSupport,
+    WasmTarget,
 }
 
 impl Feature for CompileFeature {
     /// A [`Vec`] containing all available compile features.
     fn all() -> Vec<Self> {
-        vec![
-            CompileFeature::FastCompileTimes,
-            CompileFeature::WasmSupport,
-        ]
+        vec![CompileFeature::FastCompileTimes, CompileFeature::WasmTarget]
     }
 
     /// Determines if a feature should be enabled by default.
@@ -25,7 +24,7 @@ impl ToString for CompileFeature {
     fn to_string(&self) -> String {
         match self {
             CompileFeature::FastCompileTimes => "Fast compile times".to_string(),
-            CompileFeature::WasmSupport => "WASM support".to_string(),
+            CompileFeature::WasmTarget => "Target WASM".to_string(),
         }
     }
 }

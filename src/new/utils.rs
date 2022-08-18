@@ -1,6 +1,7 @@
 use std::{
-    fs::{File, OpenOptions},
+    fs::{create_dir_all, File, OpenOptions},
     io::{Read, Write},
+    path::PathBuf,
     process::Command,
 };
 
@@ -13,8 +14,16 @@ pub fn create_file_with_content<C>(folder_name: &str, path: &str, content: C) ->
 where
     C: Into<String>,
 {
-    let full_path = format!("{folder_name}/{path}");
+    let full_path = PathBuf::from(format!("{folder_name}/{path}"));
+
+    // Create the directory if it doesn't exist
+    if let Some(dir_path) = full_path.parent() {
+        create_dir_all(dir_path).expect("Failed to create parent folder.");
+    }
+
+    // Create the file
     let mut file = File::create(full_path)?;
+    // Write the content in the file
     file.write_all(content.into().as_bytes())?;
 
     Ok(())
