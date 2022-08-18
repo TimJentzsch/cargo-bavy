@@ -83,12 +83,15 @@ fn add_dependencies(context: &mut Context) {
 }
 
 fn adjust_main_file(context: &mut Context) {
+    let mut imports = vec!["use bevy::prelude::*;"];
     let mut builder_methods = vec![];
 
     if context
         .bevy_features
         .contains(&BevyFeature::AssetHotReloading)
     {
+        imports.push("use bevy::asset::AssetServerSettings;");
+
         builder_methods.push(
             "// Enable hot reloading
             .insert_resource(AssetServerSettings {
@@ -103,13 +106,14 @@ fn adjust_main_file(context: &mut Context) {
 
     // Note: The double braces are necessary to not collide with the format syntax
     let main_rs = format!(
-        "use bevy::prelude::*;
+        "{}
 
         fn main() {{
             App::new()
                 {};
         }}
     ",
+        imports.join("\n"),
         builder_methods.join("\n")
     );
 
