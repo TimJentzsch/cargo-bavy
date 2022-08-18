@@ -1,11 +1,13 @@
-# cargo-bevy-mod
+# cargo-bavy
 
 A third-party command line utility for the Bevy game engine.
+
+To not steal the `cargo bevy` command from the official Bevy maintainers, I chose `cargo bavy` instead.
 
 ## Installation
 
 ```cli
-cargo install cargo-bevy-mod
+cargo install cargo-bavy
 ```
 
 ## Usage
@@ -15,7 +17,7 @@ cargo install cargo-bevy-mod
 Run the following command:
 
 ```cli
-cargo bevy new <FOLDER_NAME>
+cargo bavy new <FOLDER_NAME>
 ```
 
 You can then select all the features that you want.

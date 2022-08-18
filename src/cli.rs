@@ -12,27 +12,27 @@ pub struct CargoArgs {
 impl CargoArgs {
     pub fn exec(&self) {
         match &self.command {
-            CargoCommand::Bevy(args) => args.exec(),
+            CargoCommand::Bavy(args) => args.exec(),
         }
     }
 }
 
 #[derive(Debug, Subcommand)]
 enum CargoCommand {
-    Bevy(BevyArgs),
+    Bavy(BavyArgs),
 }
 
 #[derive(Debug, Args)]
 #[clap(version, about, long_about = None)]
-struct BevyArgs {
+struct BavyArgs {
     #[clap(subcommand)]
-    command: BevyCommand,
+    command: BavyCommand,
 }
 
-impl BevyArgs {
+impl BavyArgs {
     pub fn exec(&self) {
         match &self.command {
-            BevyCommand::New(args) => {
+            BavyCommand::New(args) => {
                 args.exec();
             }
         }
@@ -40,6 +40,6 @@ impl BevyArgs {
 }
 
 #[derive(Debug, Subcommand)]
-enum BevyCommand {
+enum BavyCommand {
     New(NewArgs),
 }

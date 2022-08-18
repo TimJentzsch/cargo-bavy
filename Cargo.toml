@@ -1,5 +1,5 @@
 [package]
-name = "cargo-bevy-mod"
+name = "cargo-bavy"
 version = "0.1.0"
 edition = "2021"
 description = "A third-party command line utility for the Bevy game engine."
