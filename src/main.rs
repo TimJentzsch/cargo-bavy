@@ -1,66 +1,25 @@
-mod feature;
-mod license;
-mod utils;
+use clap::{Parser, Subcommand};
 
-use std::{env, process::Command};
+mod new;
 
-use dialoguer::MultiSelect;
-use license::add_licenses;
+#[derive(Parser)]
+#[clap(version, about, long_about = None)]
+#[clap(propagate_version = true)]
+#[clap(bin_name = "cargo bevy")]
+struct Cli {
+    #[clap(subcommand)]
+    command: Command,
+}
 
-use crate::feature::Feature;
+#[derive(Subcommand)]
+enum Command {
+    New { folder_name: String },
+}
 
 fn main() {
-    let folder_name = env::args()
-        .nth(1)
-        .expect("Please specify the name of the project.");
+    let cli = Cli::parse();
 
-    let features = select_features();
-
-    create_bevy_app(&folder_name, features);
-}
-
-fn select_features() -> Vec<Feature> {
-    println!("Which features do you want?");
-    println!("([Space] to select, [Enter] to confirm.)");
-
-    let features = Feature::all();
-    let selection = MultiSelect::new()
-        .items(&features)
-        .defaults(
-            features
-                .iter()
-                .map(|feature| feature.enabled_by_default())
-                .collect::<Vec<bool>>()
-                .as_slice(),
-        )
-        .interact()
-        .unwrap();
-
-    features
-        .into_iter()
-        .enumerate()
-        .filter(|(idx, _)| selection.contains(idx))
-        .map(|(_idx, feature)| feature)
-        .collect()
-}
-
-fn create_bevy_app(folder_name: &str, features: Vec<Feature>) {
-    create_cargo_app(folder_name);
-
-    if features.contains(&Feature::MitApacheLicenses) {
-        add_licenses(folder_name)
-    }
-}
-
-fn create_cargo_app(folder_name: &str) {
-    let output = Command::new("cargo")
-        .arg("new")
-        .arg(folder_name)
-        .status()
-        .expect("Failed to create the new project.")
-        .success();
-
-    if !output {
-        panic!("Failed to create the new project.");
+    match &cli.command {
+        Command::New { folder_name } => new::new(folder_name),
     }
 }

@@ -1,4 +1,4 @@
-use crate::license::get_copyright_info;
+use super::license::get_copyright_info;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub enum Feature {
