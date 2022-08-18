@@ -17,6 +17,8 @@ use self::{
 };
 
 pub fn new(folder_name: &str) {
+    println!("Creating Bevy app `{folder_name}`...\n");
+
     let mut context = Context::new(folder_name);
     context.bevy_features = select_bevy_features();
     context.compile_features = select_compile_features();
@@ -26,6 +28,8 @@ pub fn new(folder_name: &str) {
 }
 
 fn create_bevy_app(mut context: Context) {
+    let folder_name = context.folder_name.clone();
+
     create_cargo_app(&mut context);
 
     register_compile_features(&mut context);
@@ -34,18 +38,22 @@ fn create_bevy_app(mut context: Context) {
     create_files(&mut context);
     add_dependencies(&mut context);
     adjust_main_file(&mut context);
-    apply_extra_changes(context)
+    apply_extra_changes(context);
+
+    println!("\nCreated Bevy app `{folder_name}`!");
+    println!("\nNext steps:");
+    println!("$ cd {folder_name}");
+    println!("$ cargo run");
 }
 
 fn create_cargo_app(context: &mut Context) {
     let output = Command::new("cargo")
         .arg("new")
         .arg(&context.folder_name)
-        .status()
-        .expect("Failed to create the new project.")
-        .success();
+        .output()
+        .expect("Failed to create the new project.");
 
-    if !output {
+    if !output.status.success() {
         panic!("Failed to create the new project.");
     }
 }

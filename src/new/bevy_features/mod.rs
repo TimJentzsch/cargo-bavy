@@ -26,5 +26,5 @@ impl ToString for BevyFeature {
 }
 
 pub fn select_bevy_features() -> Vec<BevyFeature> {
-    select_features("Which Bevy features do you want?")
+    select_features("[1/3] Which Bevy features do you want?")
 }

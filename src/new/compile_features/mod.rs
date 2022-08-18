@@ -38,7 +38,7 @@ impl ToString for CompileFeature {
 }
 
 pub fn select_compile_features() -> Vec<CompileFeature> {
-    select_features("Which compile features do you want?")
+    select_features("[2/3] Which compile features do you want?")
 }
 
 pub fn register_compile_features(context: &mut Context) {

@@ -71,11 +71,11 @@ pub fn add_dependency(folder_name: &str, name: &str, features: Vec<String>) {
         cmd.args(&features);
     }
 
-    let status = cmd
-        .status()
+    let output = cmd
+        .output()
         .unwrap_or_else(|_| panic!("Failed to add dependency {name} with features {features:?}"));
 
-    if !status.success() {
+    if !output.status.success() {
         panic!("Failed to add dependency {name} with features {features:?}");
     }
 }
@@ -85,7 +85,6 @@ where
     F: Feature,
 {
     println!("{prompt}");
-    println!("Press [Space] to toggle, [Enter] to confirm.");
 
     let features = F::all();
     let selection = MultiSelect::new()
@@ -110,13 +109,13 @@ where
 
 /// Run `cargo fmt` on the new project.
 pub fn run_cargo_fmt(folder_name: &str) {
-    let status = Command::new("cargo")
+    let output = Command::new("cargo")
         .arg("fmt")
         .current_dir(folder_name)
-        .status()
+        .output()
         .expect("Failed to format the project.");
 
-    if !status.success() {
+    if !output.status.success() {
         panic!("FAiled to format the project.");
     }
 }

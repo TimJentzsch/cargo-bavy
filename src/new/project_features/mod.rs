@@ -48,7 +48,7 @@ impl ToString for ProjectFeature {
 }
 
 pub fn select_project_features() -> Vec<ProjectFeature> {
-    select_features("Which compile features do you want?")
+    select_features("[3/3] Which project features do you want?")
 }
 
 pub fn register_project_features(context: &mut Context) {
