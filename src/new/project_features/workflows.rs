@@ -15,7 +15,6 @@ pub fn add_ci_workflow(context: &mut Context) {
 }
 
 pub fn add_release_workflow(context: &mut Context) {
-    // TODO: Only include WASM workflow if the WASM feature is enabled
     let mut release_workflow = include_str!(concat!(
         env!("CARGO_MANIFEST_DIR"),
         "/assets/.github/workflows/release.yaml"
