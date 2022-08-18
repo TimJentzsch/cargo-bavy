@@ -13,7 +13,7 @@ use self::{
     compile_features::{register_compile_features, select_compile_features},
     context::Context,
     project_features::{register_project_features, select_project_features},
-    utils::{add_dependency, create_file_with_content},
+    utils::{add_dependency, create_file_with_content, run_cargo_fmt, save_main_rs},
 };
 
 pub fn new(folder_name: &str) {
@@ -33,6 +33,7 @@ fn create_bevy_app(mut context: Context) {
 
     create_files(&mut context);
     add_dependencies(&mut context);
+    adjust_main_file(&mut context);
     apply_extra_changes(context)
 }
 
@@ -64,6 +65,21 @@ fn add_dependencies(context: &mut Context) {
             dependency.features.clone(),
         );
     }
+}
+
+fn adjust_main_file(context: &mut Context) {
+    let main_rs = r#"use bevy::prelude::*;
+
+    fn main() {
+        App::new()
+            .add_plugins(DefaultPlugins)
+            .run();
+    }
+    "#;
+
+    save_main_rs(&context.folder_name, main_rs.to_string());
+    // Run `cargo fmt` to make sure that everything is tidy
+    run_cargo_fmt(&context.folder_name);
 }
 
 fn apply_extra_changes(mut context: Context) {
