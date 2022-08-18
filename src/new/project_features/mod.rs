@@ -40,5 +40,10 @@ pub fn select_project_features() -> Vec<ProjectFeature> {
 }
 
 pub fn register_project_features(context: &mut Context) {
-    add_licenses(context);
+    if context
+        .project_features
+        .contains(&ProjectFeature::MitApacheLicenses)
+    {
+        add_licenses(context);
+    }
 }

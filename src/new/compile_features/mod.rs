@@ -36,5 +36,10 @@ pub fn select_compile_features() -> Vec<CompileFeature> {
 }
 
 pub fn register_compile_features(context: &mut Context) {
-    add_wasm(context);
+    if context
+        .compile_features
+        .contains(&CompileFeature::WasmTarget)
+    {
+        add_wasm(context);
+    }
 }
