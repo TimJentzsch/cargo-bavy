@@ -1,10 +1,10 @@
 use clap::Parser;
-use cli::CargoArgs;
+use cli::{CargoCommand, Command};
 
 mod cli;
 mod new;
 
 fn main() {
-    let args = CargoArgs::parse();
-    args.exec();
+    let cmd = CargoCommand::parse();
+    cmd.exec();
 }
