@@ -1,4 +1,7 @@
-use crate::cargo::{cargo_run, ArgBuilder};
+use crate::{
+    cargo::{cargo_build, cargo_run, ArgBuilder},
+    tools::install_wasm_bindgen_if_needed,
+};
 
 use self::cli::RunCommand;
 
@@ -6,6 +9,11 @@ pub mod cli;
 
 pub fn run(args: &RunCommand) {
     let mut cargo_args = ArgBuilder::new();
+
+    if args.is_wasm {
+        // Make sure that all tools are set up correctly
+        install_wasm_bindgen_if_needed(true, false);
+    }
 
     // --bin <NAME>
     if let Some(name) = &args.bin {
@@ -45,5 +53,9 @@ pub fn run(args: &RunCommand) {
         cargo_args.add_with_value("--features", "bevy/dynamic");
     }
 
-    cargo_run(cargo_args);
+    if args.is_wasm {
+        cargo_build(cargo_args);
+    } else {
+        cargo_run(cargo_args);
+    }
 }
