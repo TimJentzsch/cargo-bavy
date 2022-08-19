@@ -22,8 +22,11 @@ pub fn run(args: &RunCommand) {
         cargo_args.add("--release");
     }
 
-    // --target <TRIPLE>
-    if let Some(triple) = &args.target {
+    // --wasm / --target <TRIPLE>
+    if args.is_wasm {
+        // --wasm takes precedence
+        cargo_args.add_with_value("--target", "wasm32-unknown-unknown");
+    } else if let Some(triple) = &args.target {
         cargo_args.add_with_value("--target", triple);
     }
 

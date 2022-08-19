@@ -29,6 +29,10 @@ pub struct RunCommand {
     /// Path to Cargo.toml.
     #[clap(long = "manifest-path", value_name = "PATH")]
     pub manifest_path: Option<String>,
+
+    /// Run your game in the browser.
+    #[clap(short = 'w', long = "wasm", default_value_t = false)]
+    pub is_wasm: bool,
 }
 
 impl Command for RunCommand {
