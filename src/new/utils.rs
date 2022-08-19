@@ -1,12 +1,11 @@
 use std::{
     fs::{create_dir_all, File, OpenOptions},
-    io::{Read, Write},
+    io::Write,
     path::PathBuf,
     process::Command,
 };
 
 use dialoguer::MultiSelect;
-use toml_edit::Document;
 
 use super::feature::Feature;
 
@@ -29,28 +28,6 @@ where
     file.write_all(content.into().as_bytes())?;
 
     Ok(())
-}
-
-pub fn get_cargo_toml(folder_name: &str) -> Document {
-    let mut file =
-        File::open(format!("{folder_name}/Cargo.toml")).expect("Failed to open `Cargo.toml`");
-
-    let mut content = String::new();
-    file.read_to_string(&mut content)
-        .expect("Failed to read `Cargo.toml`");
-
-    content.parse().expect("Failed to parse `Cargo.toml`")
-}
-
-pub fn save_cargo_toml(folder_name: &str, cargo_toml: Document) {
-    let mut file = OpenOptions::new()
-        .write(true)
-        .open(format!("{folder_name}/Cargo.toml"))
-        .expect("Failed to open `Cargo.toml`");
-
-    let content = cargo_toml.to_string();
-    file.write_all(content.as_bytes())
-        .expect("Failed to write to `Cargo.toml`");
 }
 
 pub fn save_main_rs(folder_name: &str, main_rs: String) {

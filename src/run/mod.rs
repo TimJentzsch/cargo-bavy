@@ -1,6 +1,6 @@
 use crate::{
     cargo::{cargo_build, cargo_run, ArgBuilder},
-    tools::install_wasm_bindgen_if_needed,
+    wasm_bindgen::{bundle_to_web, install_wasm_bindgen_if_needed},
 };
 
 use self::cli::RunCommand;
@@ -55,6 +55,7 @@ pub fn run(args: &RunCommand) {
 
     if args.is_wasm {
         cargo_build(cargo_args);
+        bundle_to_web().expect("Failed to bundle for the web");
     } else {
         cargo_run(cargo_args);
     }

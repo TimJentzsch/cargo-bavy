@@ -1,4 +1,11 @@
-use std::process::{exit, Command};
+use std::{
+    fs::{File, OpenOptions},
+    io::{Read, Write},
+    process::{exit, Command},
+};
+
+use anyhow::Result;
+use toml_edit::Document;
 
 pub struct ArgBuilder(Vec<String>);
 
@@ -61,4 +68,24 @@ pub fn cargo_build(args: ArgBuilder) {
     if !status.success() {
         exit(status.code().unwrap_or(1));
     }
+}
+
+pub fn get_cargo_toml(folder_name: &str) -> Result<Document> {
+    let mut file = File::open(format!("{folder_name}/Cargo.toml"))?;
+
+    let mut content = String::new();
+    file.read_to_string(&mut content)?;
+
+    Ok(content.parse()?)
+}
+
+pub fn save_cargo_toml(folder_name: &str, cargo_toml: Document) {
+    let mut file = OpenOptions::new()
+        .write(true)
+        .open(format!("{folder_name}/Cargo.toml"))
+        .expect("Failed to open `Cargo.toml`");
+
+    let content = cargo_toml.to_string();
+    file.write_all(content.as_bytes())
+        .expect("Failed to write to `Cargo.toml`");
 }

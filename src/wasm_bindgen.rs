@@ -1,6 +1,9 @@
 use std::process::{exit, Command};
 
+use anyhow::{anyhow, Result};
 use dialoguer::Confirm;
+
+use crate::env::get_crate_name;
 
 /// Try to determine if `wasm-bindgen-cli` is installed.
 ///
@@ -47,5 +50,28 @@ pub fn install_wasm_bindgen_if_needed(ask_user: bool, hidden: bool) {
 
     if !status.success() {
         panic!("Installation of `wasm-bindgen-cli` failed!");
+    }
+}
+
+pub fn bundle_to_web() -> Result<()> {
+    let name = get_crate_name()?;
+
+    let status = Command::new("wasm-bindgen")
+        .args([
+            "--no-typescript",
+            "--out-name",
+            "bevy_game",
+            "--out-dir",
+            "wasm",
+            "--target",
+            "web",
+        ])
+        .arg(format!("target/wasm32-unknown-unknown/release/{name}.wasm"))
+        .status()?;
+
+    if !status.success() {
+        Err(anyhow!("Failed to bundle project for the web."))
+    } else {
+        Ok(())
     }
 }
