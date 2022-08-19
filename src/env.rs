@@ -4,7 +4,7 @@ use std::process::Command;
 
 use anyhow::{anyhow, Result};
 use chrono::{Datelike, Local};
-use toml_edit::Item;
+use toml_edit::{Item, Value};
 
 use crate::cargo::get_cargo_toml;
 
@@ -32,8 +32,8 @@ pub fn get_year() -> String {
 pub fn get_crate_name() -> Result<String> {
     let cargo_toml = get_cargo_toml("./")?;
 
-    if let Item::Value(name) = &cargo_toml["package"]["name"] {
-        Ok(name.to_string())
+    if let Item::Value(Value::String(name)) = &cargo_toml["package"]["name"] {
+        Ok(name.value().clone())
     } else {
         Err(anyhow!("No package name defined in Cargo.toml"))
     }

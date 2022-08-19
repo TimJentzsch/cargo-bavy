@@ -1,4 +1,4 @@
-use clap::Args;
+use clap::{ArgAction, Args};
 
 use crate::cli::Command;
 
@@ -15,7 +15,7 @@ pub struct RunCommand {
     pub example: Option<String>,
 
     /// Build artifacts in release mode, with optimizations.
-    #[clap(short = 'r', long = "release", default_value_t = false)]
+    #[clap(short = 'r', long = "release", action = ArgAction::SetTrue, default_value_t = false)]
     pub is_release: bool,
 
     /// Build for the target triple.
@@ -31,7 +31,7 @@ pub struct RunCommand {
     pub manifest_path: Option<String>,
 
     /// Run your game in the browser.
-    #[clap(short = 'w', long = "wasm", default_value_t = false)]
+    #[clap(short = 'w', long = "wasm", action = ArgAction::SetTrue, default_value_t = false)]
     pub is_wasm: bool,
 }
 

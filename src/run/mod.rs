@@ -48,8 +48,8 @@ pub fn run(args: &RunCommand) {
         cargo_args.add_with_value("--manifest-path", path);
     }
 
-    // Enable dynamic linking if not in release mode
-    if !args.is_release {
+    // Enable dynamic linking if not in release mode and not building for WASM
+    if !args.is_release && !args.is_wasm {
         cargo_args.add_with_value("--features", "bevy/dynamic");
     }
 
