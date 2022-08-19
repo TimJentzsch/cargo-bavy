@@ -1,6 +1,6 @@
 use crate::{
     cargo::{cargo_build, cargo_run, ArgBuilder},
-    wasm_bindgen::{bundle_to_web, install_wasm_bindgen_if_needed},
+    wasm_bindgen::{bundle_to_web, create_wasm_folder_if_needed, install_wasm_bindgen_if_needed},
 };
 
 use self::cli::RunCommand;
@@ -12,7 +12,9 @@ pub fn run(args: &RunCommand) {
 
     if args.is_wasm {
         // Make sure that all tools are set up correctly
-        install_wasm_bindgen_if_needed(true, false);
+        install_wasm_bindgen_if_needed(true, false)
+            .expect("Installation of `wasm-bindgen-cli` failed.");
+        create_wasm_folder_if_needed(true).expect("Creation of `wasm/` folder failed.");
     }
 
     // --bin <NAME>

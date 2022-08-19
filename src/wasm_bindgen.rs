@@ -1,9 +1,12 @@
-use std::process::{exit, Command};
+use std::{
+    path::Path,
+    process::{exit, Command},
+};
 
 use anyhow::{anyhow, Result};
 use dialoguer::Confirm;
 
-use crate::env::get_crate_name;
+use crate::{env::get_crate_name, files::create_file_with_content};
 
 /// Try to determine if `wasm-bindgen-cli` is installed.
 ///
@@ -24,9 +27,9 @@ pub fn is_wasm_bindgen_installed() -> bool {
 ///
 /// If `ask_user` is set to `true`, it will first prompt the user and abort otherwise.
 /// If `hidden` is set to `true`, the user won't be able to see the output.
-pub fn install_wasm_bindgen_if_needed(ask_user: bool, hidden: bool) {
+pub fn install_wasm_bindgen_if_needed(ask_user: bool, hidden: bool) -> Result<()> {
     if is_wasm_bindgen_installed() {
-        return;
+        return Ok(());
     }
 
     // Abort if the user doesn't want to install it
@@ -43,13 +46,15 @@ pub fn install_wasm_bindgen_if_needed(ask_user: bool, hidden: bool) {
     cmd.arg("install").arg("wasm-bindgen-cli");
 
     let status = if hidden {
-        cmd.output().unwrap().status
+        cmd.output()?.status
     } else {
-        cmd.status().unwrap()
+        cmd.status()?
     };
 
     if !status.success() {
-        panic!("Installation of `wasm-bindgen-cli` failed!");
+        Err(anyhow!("Failed to install `wasm-bindgen-cli`."))
+    } else {
+        Ok(())
     }
 }
 
@@ -81,4 +86,44 @@ pub fn bundle_to_web(is_release: bool) -> Result<()> {
     } else {
         Ok(())
     }
+}
+
+/// Determine if the `/wasm/` folder exists already.
+pub fn does_wasm_folder_exist() -> bool {
+    Path::new("wasm").exists()
+}
+
+/// Create the `wasm/` folder for the WASM build artifacts if needed.
+pub fn create_wasm_folder_if_needed(ask_user: bool) -> Result<()> {
+    if does_wasm_folder_exist() {
+        return Ok(());
+    }
+
+    // Abort if the user doesn't want to create it
+    if ask_user
+        && !Confirm::new()
+            .with_prompt(
+                "The `wasm/` folder for the WASM build is missing, should I create it for you?",
+            )
+            .interact()
+            .unwrap()
+    {
+        exit(1);
+    }
+
+    // Create the folder and necessary files
+    let wasm_index = include_str!(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/assets/wasm/index.html"
+    ));
+
+    let wasm_gitignore = include_str!(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/assets/wasm/gitignore.txt"
+    ));
+
+    create_file_with_content(".", "wasm/index.html", wasm_index)?;
+    create_file_with_content(".", "wasm/.gitignore", wasm_gitignore)?;
+
+    Ok(())
 }
