@@ -1,44 +1,11 @@
-use std::process::{exit, Command};
+use crate::cargo::{cargo_run, ArgBuilder};
 
 use self::cli::RunCommand;
 
 pub mod cli;
 
-struct CargoArgs(Vec<String>);
-
-impl CargoArgs {
-    fn new() -> Self {
-        Self(Vec::new())
-    }
-
-    /// Add an argument.
-    ///
-    /// Can be a `&str` or a `String`.
-    /// If it contains whitespace, it is split into multiple args.
-    fn add<A>(&mut self, arg: A)
-    where
-        A: Into<String>,
-    {
-        let arg: String = arg.into();
-
-        for part in arg.split_ascii_whitespace() {
-            self.0.push(part.to_string());
-        }
-    }
-
-    /// Add an argument with a value.
-    fn add_with_value<A, V>(&mut self, arg: A, value: V)
-    where
-        A: Into<String>,
-        V: Into<String>,
-    {
-        self.add(arg);
-        self.add(value);
-    }
-}
-
 pub fn run(args: &RunCommand) {
-    let mut cargo_args = CargoArgs::new();
+    let mut cargo_args = ArgBuilder::new();
 
     // --bin <NAME>
     if let Some(name) = &args.bin {
@@ -75,13 +42,5 @@ pub fn run(args: &RunCommand) {
         cargo_args.add_with_value("--features", "bevy/dynamic");
     }
 
-    let status = Command::new("cargo")
-        .arg("run")
-        .args(cargo_args.0)
-        .status()
-        .expect("Failed to run `cargo run`.");
-
-    if !status.success() {
-        exit(status.code().unwrap_or(1));
-    }
+    cargo_run(cargo_args);
 }
