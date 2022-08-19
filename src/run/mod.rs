@@ -55,7 +55,7 @@ pub fn run(args: &RunCommand) {
 
     if args.is_wasm {
         cargo_build(cargo_args);
-        bundle_to_web().expect("Failed to bundle for the web");
+        bundle_to_web(args.is_release).expect("Failed to bundle for the web");
     } else {
         cargo_run(cargo_args);
     }

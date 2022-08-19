@@ -53,8 +53,13 @@ pub fn install_wasm_bindgen_if_needed(ask_user: bool, hidden: bool) {
     }
 }
 
-pub fn bundle_to_web() -> Result<()> {
+/// Run `wasm-bindgen` to bundle the binary for the web.
+///
+/// Requires a build artifact from `cargo build`.
+pub fn bundle_to_web(is_release: bool) -> Result<()> {
     let name = get_crate_name()?;
+
+    let artifact_folder = if is_release { "release" } else { "debug" };
 
     let status = Command::new("wasm-bindgen")
         .args([
@@ -66,7 +71,9 @@ pub fn bundle_to_web() -> Result<()> {
             "--target",
             "web",
         ])
-        .arg(format!("target/wasm32-unknown-unknown/release/{name}.wasm"))
+        .arg(format!(
+            "target/wasm32-unknown-unknown/{artifact_folder}/{name}.wasm"
+        ))
         .status()?;
 
     if !status.success() {
