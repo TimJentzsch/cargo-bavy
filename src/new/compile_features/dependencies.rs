@@ -17,13 +17,16 @@ fn set_cargo_toml_dependency_optimizations(folder_name: &str) {
 
     let mut profile = Table::new();
     profile.set_implicit(true);
-    let mut profile_dev = Table::new();
 
     // Enable a small amount of optimization in debug mode
     // ```toml
     // [profile.dev]
     // opt-level = 1
     // ```
+    let mut profile_dev = Table::new();
+    profile_dev
+        .decor_mut()
+        .set_prefix("\n# Enable a small amount of optimization in debug mode\n");
     profile_dev.insert("opt-level", value(1));
 
     let mut profile_dev_package = Table::new();
@@ -35,6 +38,9 @@ fn set_cargo_toml_dependency_optimizations(folder_name: &str) {
     // opt-level = 3
     // ```
     let mut profile_dev_package_all = Table::new();
+    profile_dev_package_all
+        .decor_mut()
+        .set_prefix("\n# Enable high optimizations for dependencies (incl. Bevy)\n");
     profile_dev_package_all["opt-level"] = value(3);
 
     profile_dev_package.insert("*", Item::Table(profile_dev_package_all));
