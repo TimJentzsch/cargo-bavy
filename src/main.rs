@@ -7,6 +7,7 @@ pub(crate) mod env;
 pub(crate) mod files;
 mod new;
 mod run;
+pub(crate) mod rustup;
 pub(crate) mod wasm_bindgen;
 
 fn main() {

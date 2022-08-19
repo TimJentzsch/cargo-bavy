@@ -1,5 +1,6 @@
 use crate::{
     cargo::{cargo_build, cargo_run, ArgBuilder},
+    rustup::install_target_if_needed,
     wasm_bindgen::{bundle_to_web, create_wasm_folder_if_needed, install_wasm_bindgen_if_needed},
 };
 
@@ -12,6 +13,8 @@ pub fn run(args: &RunCommand) {
 
     if args.is_wasm {
         // Make sure that all tools are set up correctly
+        install_target_if_needed("wasm32-unknown-unknown", true, false)
+            .expect("Failed to install compilation target `wasm32-unknown-unknown`.");
         install_wasm_bindgen_if_needed(true, false)
             .expect("Installation of `wasm-bindgen-cli` failed.");
         create_wasm_folder_if_needed(true).expect("Creation of `wasm/` folder failed.");
