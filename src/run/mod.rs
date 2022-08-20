@@ -1,3 +1,5 @@
+use dialoguer::console::{style, Style};
+
 use crate::{
     cargo::{cargo_build, cargo_run, ArgBuilder},
     http_server::launch_game,
@@ -11,6 +13,7 @@ pub mod cli;
 
 pub fn run(args: &RunCommand) {
     let mut cargo_args = ArgBuilder::new();
+    let info_style = Style::new().magenta().dim();
 
     if args.is_wasm {
         // Make sure that all tools are set up correctly
@@ -64,8 +67,17 @@ pub fn run(args: &RunCommand) {
     }
 
     if args.is_wasm {
+        println!("{}", info_style.apply_to("Building for WASM..."));
         cargo_build(cargo_args);
+
+        println!("{}", info_style.apply_to("Bundling for the web..."));
         bundle_to_web(args.is_release).expect("Failed to bundle for the web");
+
+        println!("{}", info_style.apply_to("Serving on localhost..."));
+        println!(
+            "Open your game at <{}>.",
+            style("http://127.0.0.1:4000").green()
+        );
         launch_game().expect("Failed to launch game");
     } else {
         cargo_run(cargo_args);
