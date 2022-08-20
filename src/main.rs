@@ -1,6 +1,7 @@
 use clap::Parser;
 use cli::{CargoCommand, Command};
 
+mod build;
 pub(crate) mod cargo;
 mod cli;
 pub(crate) mod env;
