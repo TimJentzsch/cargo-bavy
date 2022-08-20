@@ -14,8 +14,9 @@
 ### Bug fixes
 
 - Fixed optimized dependency configuration having invalid table keys in `Cargo.toml`.
+- Fixed fast linker configuration including a shared generics flag on stable toolchain, which caused a compile error.
 
-## Version 0.1.0
+## Release v0.1.0 - 2022-08-19
 
 The initial release!
 

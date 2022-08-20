@@ -14,9 +14,13 @@ pub fn add_fast_linker(context: &mut Context) {
         .compile_features
         .contains(&CompileFeature::NightlyToolchain)
     {
-        config_toml = config_toml.replace("{{{share_generics}}}", r#", "-Zshare-generics=y""#);
+        config_toml = config_toml
+            .replace("{{{share_generics_yes}}}", r#", "-Zshare-generics=y""#)
+            .replace("{{{share_generics_no}}}", r#""-Zshare-generics=n""#);
     } else {
-        config_toml = config_toml.replace("{{{share_generics}}}", "");
+        config_toml = config_toml
+            .replace("{{{share_generics_yes}}}", "")
+            .replace("{{{share_generics_no}}}", "");
     }
 
     context
