@@ -90,13 +90,28 @@ pub fn cargo_run(args: ArgBuilder) {
 
 /// Run `cargo build` with the given arguments.
 ///
-/// Exits the program if `cargo run` failed.
+/// Exits the program if `cargo build` failed.
 pub fn cargo_build(args: ArgBuilder) {
     let status = Command::new("cargo")
         .arg("build")
         .args(args.0)
         .status()
         .expect("Failed to run `cargo build`.");
+
+    if !status.success() {
+        exit(status.code().unwrap_or(1));
+    }
+}
+
+/// Run `cargo check` with the given arguments.
+///
+/// Exits the program if `cargo check` failed.
+pub fn cargo_check(args: ArgBuilder) {
+    let status = Command::new("cargo")
+        .arg("check")
+        .args(args.0)
+        .status()
+        .expect("Failed to run `cargo check`.");
 
     if !status.success() {
         exit(status.code().unwrap_or(1));
