@@ -1,13 +1,15 @@
 mod dependencies;
 mod fast_linker;
 mod nightly;
+mod rust_analyzer_bevy_dynamic;
 mod wasm;
 
 use dialoguer::console::style;
 
 use self::{
     dependencies::optimize_dependencies, fast_linker::add_fast_linker,
-    nightly::add_nightly_toolchain, wasm::add_wasm,
+    nightly::add_nightly_toolchain,
+    rust_analyzer_bevy_dynamic::enable_bevy_dynamic_for_rust_analyzer, wasm::add_wasm,
 };
 
 use super::{context::Context, feature::Feature, utils::select_features};
@@ -18,6 +20,7 @@ pub enum CompileFeature {
     FastLinker,
     OptimizeDependencies,
     WasmTarget,
+    RustAnalyzerBevyDynamic,
 }
 
 impl Feature for CompileFeature {
@@ -28,6 +31,7 @@ impl Feature for CompileFeature {
             CompileFeature::FastLinker,
             CompileFeature::OptimizeDependencies,
             CompileFeature::WasmTarget,
+            CompileFeature::RustAnalyzerBevyDynamic,
         ]
     }
 
@@ -45,7 +49,12 @@ impl ToString for CompileFeature {
             CompileFeature::OptimizeDependencies => {
                 "Optimize dependencies in debug mode".to_string()
             }
-            CompileFeature::WasmTarget => "Target WASM".to_string(),
+            CompileFeature::WasmTarget => {
+                "Target WASM with `wasm32-unknown-unknown` and `wasm-bindgen-cli`".to_string()
+            }
+            CompileFeature::RustAnalyzerBevyDynamic => {
+                "Enable `bevy/dynamic` in VS Code for Rust Analyzer (faster compiles)".to_string()
+            }
         }
     }
 }
@@ -85,5 +94,12 @@ pub fn register_compile_features(context: &mut Context) {
         .contains(&CompileFeature::OptimizeDependencies)
     {
         optimize_dependencies(context);
+    }
+
+    if context
+        .compile_features
+        .contains(&CompileFeature::RustAnalyzerBevyDynamic)
+    {
+        enable_bevy_dynamic_for_rust_analyzer(context);
     }
 }
