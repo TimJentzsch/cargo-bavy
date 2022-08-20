@@ -18,7 +18,7 @@ impl ArgBuilder {
     ///
     /// Can be a `&str` or a `String`.
     /// If it contains whitespace, it is split into multiple args.
-    pub fn add<A>(&mut self, arg: A)
+    pub fn add<A>(&mut self, arg: A) -> &mut Self
     where
         A: Into<String>,
     {
@@ -27,16 +27,48 @@ impl ArgBuilder {
         for part in arg.split_ascii_whitespace() {
             self.0.push(part.to_string());
         }
+
+        self
     }
 
     /// Add an argument with a value.
-    pub fn add_with_value<A, V>(&mut self, arg: A, value: V)
+    pub fn add_with_value<A, V>(&mut self, arg: A, value: V) -> &mut Self
     where
         A: Into<String>,
         V: Into<String>,
     {
         self.add(arg);
         self.add(value);
+
+        self
+    }
+
+    /// Add a boolean flag with the given name, if `value` is `true`.
+    ///
+    /// Example: `--release`
+    pub fn add_flag<N>(&mut self, name: N, value: bool) -> &mut Self
+    where
+        N: Into<String>,
+    {
+        if value {
+            self.add(name);
+        }
+
+        self
+    }
+
+    /// Add an argument with an optional value.
+    ///
+    /// Example: `--bin <NAME>`
+    pub fn add_opt_value<N>(&mut self, name: N, value: Option<String>) -> &mut Self
+    where
+        N: Into<String>,
+    {
+        if let Some(value) = value {
+            self.add_with_value(name, value);
+        }
+
+        self
     }
 }
 
