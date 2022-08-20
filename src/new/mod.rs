@@ -8,12 +8,14 @@ mod utils;
 
 use std::process::Command;
 
+use crate::files::create_file_with_content;
+
 use self::{
     bevy_features::{select_bevy_features, BevyFeature},
     compile_features::{register_compile_features, select_compile_features},
     context::{AddDependency, Context},
     project_features::{register_project_features, select_project_features},
-    utils::{add_dependency, create_file_with_content, run_cargo_fmt, save_main_rs},
+    utils::{add_dependency, run_cargo_fmt, save_main_rs},
 };
 
 pub fn new(folder_name: &str) {

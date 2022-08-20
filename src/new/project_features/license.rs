@@ -1,11 +1,9 @@
-use std::process::Command;
-
-use chrono::{Datelike, Local};
 use toml_edit::value;
 
-use crate::new::{
-    context::{Context, CreateFile},
-    utils::{get_cargo_toml, save_cargo_toml},
+use crate::{
+    cargo::{get_cargo_toml, save_cargo_toml},
+    env::{get_author, get_year},
+    new::context::{Context, CreateFile},
 };
 
 pub fn add_licenses(context: &mut Context) {
@@ -35,7 +33,7 @@ pub fn add_licenses(context: &mut Context) {
 
 /// Set the `package.license` field in `Cargo.toml`
 fn set_cargo_toml_license(folder_name: &str, license: &str) {
-    let mut cargo_toml = get_cargo_toml(folder_name);
+    let mut cargo_toml = get_cargo_toml(folder_name).expect("Failed to get Cargo.toml");
     cargo_toml["package"]["license"] = value(license);
     save_cargo_toml(folder_name, cargo_toml);
 }
@@ -51,24 +49,4 @@ pub fn get_copyright_info() -> String {
     } else {
         year
     }
-}
-
-/// Try to get the author from git.
-///
-/// This uses `git config user.name`.
-fn get_author() -> Option<String> {
-    // Run `git config user.name`
-    Command::new("git")
-        .arg("config")
-        .arg("user.name")
-        .output()
-        .ok()
-        .and_then(|output| String::from_utf8(output.stdout).ok())
-        // Remove surrounding whitespace
-        .map(|author| author.trim().to_string())
-}
-
-/// Get the current year.
-fn get_year() -> String {
-    Local::now().date().year().to_string()
 }

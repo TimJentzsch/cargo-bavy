@@ -1,8 +1,8 @@
 use toml_edit::{value, Item, Table};
 
-use crate::new::{
-    context::Context,
-    utils::{get_cargo_toml, save_cargo_toml},
+use crate::{
+    cargo::{get_cargo_toml, save_cargo_toml},
+    new::context::Context,
 };
 
 /// Optimize dependencies in debug mode
@@ -13,7 +13,7 @@ pub fn optimize_dependencies(context: &mut Context) {
 }
 
 fn set_cargo_toml_dependency_optimizations(folder_name: &str) {
-    let mut cargo_toml = get_cargo_toml(folder_name);
+    let mut cargo_toml = get_cargo_toml(folder_name).expect("Failed to get Cargo.toml");
 
     let mut profile = Table::new();
     profile.set_implicit(true);

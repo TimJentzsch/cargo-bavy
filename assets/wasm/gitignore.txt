@@ -1,0 +1,3 @@
+assets/
+bevy_game.js
+bevy_game_bg.wasm

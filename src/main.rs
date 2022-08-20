@@ -1,10 +1,17 @@
 use clap::Parser;
-use cli::CargoArgs;
+use cli::{CargoCommand, Command};
 
+pub(crate) mod cargo;
 mod cli;
+pub(crate) mod env;
+pub(crate) mod files;
+pub(crate) mod http_server;
 mod new;
+mod run;
+pub(crate) mod rustup;
+pub(crate) mod wasm_bindgen;
 
 fn main() {
-    let args = CargoArgs::parse();
-    args.exec();
+    let cmd = CargoCommand::parse();
+    cmd.exec();
 }

@@ -1,45 +1,64 @@
 use clap::{Args, Parser, Subcommand};
 
-use crate::new::cli::NewArgs;
+use crate::{new::cli::NewCommand, run::cli::RunCommand};
+
+pub trait Command {
+    /// Execute the command
+    fn exec(&self);
+}
 
 #[derive(Debug, Parser)]
 #[clap(bin_name = "cargo")]
-pub struct CargoArgs {
+pub struct CargoCommand {
     #[clap(subcommand)]
-    command: CargoCommand,
+    command: CargoSubcommand,
 }
 
-impl CargoArgs {
-    pub fn exec(&self) {
-        match &self.command {
-            CargoCommand::Bavy(args) => args.exec(),
-        }
+impl Command for CargoCommand {
+    fn exec(&self) {
+        self.command.exec();
     }
 }
 
 #[derive(Debug, Subcommand)]
-enum CargoCommand {
-    Bavy(BavyArgs),
+enum CargoSubcommand {
+    Bavy(BavyCommand),
+}
+
+impl Command for CargoSubcommand {
+    fn exec(&self) {
+        match self {
+            CargoSubcommand::Bavy(cmd) => cmd.exec(),
+        }
+    }
 }
 
 #[derive(Debug, Args)]
 #[clap(version, about, long_about = None)]
-struct BavyArgs {
+struct BavyCommand {
     #[clap(subcommand)]
-    command: BavyCommand,
+    command: BavySubcommand,
 }
 
-impl BavyArgs {
-    pub fn exec(&self) {
-        match &self.command {
-            BavyCommand::New(args) => {
-                args.exec();
-            }
-        }
+impl Command for BavyCommand {
+    fn exec(&self) {
+        self.command.exec();
     }
 }
 
 #[derive(Debug, Subcommand)]
-enum BavyCommand {
-    New(NewArgs),
+enum BavySubcommand {
+    /// Create a new Bevy app.
+    New(NewCommand),
+    /// Run your Bevy app with optimized compile times.
+    Run(RunCommand),
+}
+
+impl Command for BavySubcommand {
+    fn exec(&self) {
+        match self {
+            BavySubcommand::New(cmd) => cmd.exec(),
+            BavySubcommand::Run(cmd) => cmd.exec(),
+        }
+    }
 }
