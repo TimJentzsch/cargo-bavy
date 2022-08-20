@@ -9,7 +9,13 @@
   - They automatically add `--features bevy/dynamic` in debug mode for faster compile times.
   - They have an additional `--wasm`/`-w` flag to target the browser.
   - All necessary tools will be installed for you if needed.
-- A `.gitignore` file will now be added to the `wasm/` folder.
+- Changed `cargo bavy new` to add `.gitignore` file to the `wasm/` folder with the WASM option.
+- Changed `cargo bavy new` to automatically install needed tools when WASM option is selected.
+
+### Usability
+
+- Changed `cargo bavy new` to colorize output.
+- Changed `cargo bavy new` to suggest running `cargo bavy run` instead of `cargo run`.
 
 ### Bug fixes
 

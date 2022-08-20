@@ -3,6 +3,8 @@ mod fast_linker;
 mod nightly;
 mod wasm;
 
+use dialoguer::console::style;
+
 use self::{
     dependencies::optimize_dependencies, fast_linker::add_fast_linker,
     nightly::add_nightly_toolchain, wasm::add_wasm,
@@ -49,7 +51,11 @@ impl ToString for CompileFeature {
 }
 
 pub fn select_compile_features() -> Vec<CompileFeature> {
-    select_features("[2/3] Which compile features do you want?")
+    select_features(format!(
+        "{} Which {} do you want?",
+        style("[2/3]").black(),
+        style("compile features").cyan(),
+    ))
 }
 
 pub fn register_compile_features(context: &mut Context) {

@@ -31,11 +31,12 @@ pub fn add_dependency(folder_name: &str, name: &str, features: Vec<String>) {
     }
 }
 
-pub fn select_features<F>(prompt: &str) -> Vec<F>
+pub fn select_features<P, F>(prompt: P) -> Vec<F>
 where
+    P: Into<String>,
     F: Feature,
 {
-    println!("{prompt}");
+    println!("{}", prompt.into());
 
     let features = F::all();
     let selection = MultiSelect::new()
