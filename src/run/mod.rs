@@ -2,6 +2,7 @@ use dialoguer::console::{style, Style};
 
 use crate::{
     cargo::{cargo_build, cargo_run, ArgBuilder},
+    files::replace_folder,
     http_server::launch_game,
     rustup::install_target_if_needed,
     wasm_bindgen::{bundle_to_web, create_wasm_folder_if_needed, install_wasm_bindgen_if_needed},
@@ -72,6 +73,9 @@ pub fn run(args: &RunCommand) {
 
         println!("{}", info_style.apply_to("Bundling for the web..."));
         bundle_to_web(args.is_release).expect("Failed to bundle for the web");
+
+        println!("{}", info_style.apply_to("Updating assets..."));
+        replace_folder("assets", "wasm").expect("Failed to update asset folder");
 
         println!("{}", info_style.apply_to("Serving on localhost..."));
         println!(
