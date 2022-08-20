@@ -23,7 +23,7 @@ pub fn is_wasm_bindgen_installed() -> bool {
     }
 }
 
-/// Checks if `wasm-bindgen-cli` is installed already and installs it if it's not.
+/// Check if `wasm-bindgen-cli` is installed already and install it if it's not.
 ///
 /// If `ask_user` is set to `true`, it will first prompt the user and abort otherwise.
 /// If `hidden` is set to `true`, the user won't be able to see the output.
