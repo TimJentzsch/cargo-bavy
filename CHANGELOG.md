@@ -11,6 +11,9 @@
   - All necessary tools will be installed for you if needed.
 - Changed `cargo bavy new` to add `.gitignore` file to the `wasm/` folder with the WASM option.
 - Changed `cargo bavy new` to automatically install needed tools when WASM option is selected.
+- Added option to `cargo bavy new` to configure Rust Analyzer in VS Code to use `bevy/dynamic` feature.
+  - This avoids unnecessary re-compiles after you use `cargo bavy run` and other commands.
+  - You should configure this for all projects where you use `cargo-bavy`.
 
 ### Usability
 
