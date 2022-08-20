@@ -1,6 +1,8 @@
 use clap::{Args, Parser, Subcommand};
 
-use crate::{build::cli::BuildCommand, new::cli::NewCommand, run::cli::RunCommand};
+use crate::{
+    build::cli::BuildCommand, check::cli::CheckCommand, new::cli::NewCommand, run::cli::RunCommand,
+};
 
 pub trait Command {
     /// Execute the command
@@ -50,18 +52,21 @@ impl Command for BavyCommand {
 enum BavySubcommand {
     /// Create a new Bevy app.
     New(NewCommand),
-    /// Run your Bevy app with optimized compile times.
-    Run(RunCommand),
+    /// Check your Bevy app with optimized compile times.
+    Check(CheckCommand),
     /// Build your Bevy app with optimized compile times.
     Build(BuildCommand),
+    /// Run your Bevy app with optimized compile times.
+    Run(RunCommand),
 }
 
 impl Command for BavySubcommand {
     fn exec(&self) {
         match self {
             BavySubcommand::New(cmd) => cmd.exec(),
-            BavySubcommand::Run(cmd) => cmd.exec(),
+            BavySubcommand::Check(cmd) => cmd.exec(),
             BavySubcommand::Build(cmd) => cmd.exec(),
+            BavySubcommand::Run(cmd) => cmd.exec(),
         }
     }
 }
