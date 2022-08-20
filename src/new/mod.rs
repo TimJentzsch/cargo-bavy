@@ -60,7 +60,7 @@ fn create_bevy_app(mut context: Context) {
     );
     println!("\nNext steps:");
     println!("$ cd {folder_name}");
-    println!("$ cargo run");
+    println!("$ cargo bavy run");
 }
 
 fn create_cargo_app(context: &mut Context) {
