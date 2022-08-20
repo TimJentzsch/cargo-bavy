@@ -15,6 +15,7 @@
 
 - Fixed optimized dependency configuration having invalid table keys in `Cargo.toml`.
 - Fixed fast linker configuration including a shared generics flag on stable toolchain, which caused a compile error.
+- Fixed Clippy CI workflow not including GitHub token, so it wouldn't post comments with the warnings on your PRs.
 
 ## Release v0.1.0 - 2022-08-19
 
