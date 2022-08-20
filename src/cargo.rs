@@ -60,11 +60,12 @@ impl ArgBuilder {
     /// Add an argument with an optional value.
     ///
     /// Example: `--bin <NAME>`
-    pub fn add_opt_value<N>(&mut self, name: N, value: Option<String>) -> &mut Self
+    pub fn add_opt_value<N, V>(&mut self, name: N, value: &Option<V>) -> &mut Self
     where
         N: Into<String>,
+        V: Into<String> + Clone,
     {
-        if let Some(value) = value {
+        if let Some(value) = value.clone() {
             self.add_with_value(name, value);
         }
 
