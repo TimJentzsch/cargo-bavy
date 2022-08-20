@@ -8,6 +8,8 @@ mod utils;
 
 use std::process::Command;
 
+use dialoguer::console::style;
+
 use crate::files::create_file_with_content;
 
 use self::{
@@ -19,9 +21,16 @@ use self::{
 };
 
 pub fn new(folder_name: &str) {
-    println!("Creating Bevy app `{folder_name}`...\n");
-    println!("- Use [Space] to select/unselect options");
-    println!("- Use [Enter] to confirm selection\n");
+    println!(
+        "{} Bevy app `{}`...\n",
+        style("Creating").green().bold(),
+        style(folder_name).cyan()
+    );
+    println!(
+        "- Use {} to select/unselect options",
+        style("[Space]").blue()
+    );
+    println!("- Use {} to confirm selection\n", style("[Enter]").blue());
 
     let mut context = Context::new(folder_name);
     context.bevy_features = select_bevy_features();
@@ -44,7 +53,11 @@ fn create_bevy_app(mut context: Context) {
     adjust_main_file(&mut context);
     apply_extra_changes(context);
 
-    println!("\nCreated Bevy app `{folder_name}`!");
+    println!(
+        "\n{} Bevy app `{}`!",
+        style("Created").green().bold(),
+        style(&folder_name).cyan()
+    );
     println!("\nNext steps:");
     println!("$ cd {folder_name}");
     println!("$ cargo run");

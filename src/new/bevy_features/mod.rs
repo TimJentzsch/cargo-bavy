@@ -1,3 +1,5 @@
+use dialoguer::console::style;
+
 use super::{feature::Feature, utils::select_features};
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -26,5 +28,9 @@ impl ToString for BevyFeature {
 }
 
 pub fn select_bevy_features() -> Vec<BevyFeature> {
-    select_features("[1/3] Which Bevy features do you want?")
+    select_features(format!(
+        "{} Which {} do you want?",
+        style("[1/3]").black(),
+        style("Bevy features").cyan(),
+    ))
 }

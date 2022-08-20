@@ -7,6 +7,7 @@ use self::{
 };
 
 use super::{context::Context, feature::Feature, utils::select_features};
+use dialoguer::console::style;
 use license::get_copyright_info;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -48,7 +49,11 @@ impl ToString for ProjectFeature {
 }
 
 pub fn select_project_features() -> Vec<ProjectFeature> {
-    select_features("[3/3] Which project features do you want?")
+    select_features(format!(
+        "{} Which {} do you want?",
+        style("[3/3]").black(),
+        style("project features").cyan(),
+    ))
 }
 
 pub fn register_project_features(context: &mut Context) {
