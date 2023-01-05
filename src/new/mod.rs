@@ -108,7 +108,7 @@ fn adjust_main_file(context: &mut Context) {
             "// Enable hot reloading
             .add_plugins(DefaultPlugins.set(AssetPlugin {
                 watch_for_changes: true,
-                ..Default::default()
+                ..default()
             }))",
         )
     } else {
