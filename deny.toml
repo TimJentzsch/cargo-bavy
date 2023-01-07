@@ -173,14 +173,7 @@ deny = [
 ]
 # Certain crates/versions that will be skipped when doing duplicate detection.
 skip = [
-    # actix-files v0.6.2
-    { name = "windows-sys", version = "0.36.1" },
-    { name = "windows_aarch64_msvc", version = "0.36.1" },
-    { name = "windows_i686_gnu", version = "0.36.1" },
-    { name = "windows_i686_msvc", version = "0.36.1" },
-    { name = "windows_x86_64_gnu", version = "0.36.1" },
-    { name = "windows_x86_64_msvc", version = "0.36.1" },
-    { name = "hermit-abi", version = "0.1.19" },
+    #{ name = "ansi_term", version = "=0.11.0" },
 ]
 # Similarly to `skip` allows you to skip certain crates during duplicate
 # detection. Unlike skip, it also includes the entire tree of transitive
