@@ -25,7 +25,7 @@ pub fn get_author() -> Option<String> {
 
 /// Get the current year.
 pub fn get_year() -> String {
-    Local::now().date().year().to_string()
+    Local::now().year().to_string()
 }
 
 /// Tries to get the crate name from `Cargo.toml`.
