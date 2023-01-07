@@ -78,7 +78,7 @@ jobs:
           key: ${{ runner.os }}-cargo-check-unused-dependencies-${{ hashFiles('**/Cargo.toml') }}
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: ${{ env.NIGHTLY_TOOLCHAIN }}
+          toolchain: stable
           override: true
       - name: Installs cargo-udeps
         run: cargo install --force cargo-udeps
