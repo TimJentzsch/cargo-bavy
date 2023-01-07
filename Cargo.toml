@@ -15,8 +15,11 @@ keywords = ["cargo-subcommand", "cli", "bevy"]
 actix-files = { version = "0.6.2", default-features = false }
 actix-web = { version = "4.2.1", default-features = false }
 anyhow = "1.0.68"
-chrono = "0.4.23"
-clap = { version = "4.0.32", features = ["derive"] }
+chrono = { version = "0.4.23", default-features = false, features = ["clock"] }
+clap = { version = "4.0.32", default-features = false, features = [
+  "std",
+  "derive",
+] }
 dialoguer = "0.10.2"
 fs_extra = "1.2.0"
 toml_edit = "0.17.1"
