@@ -84,7 +84,7 @@ fn create_files(context: &mut Context) {
 
 fn add_dependencies(context: &mut Context) {
     context.add_dependencies.push(AddDependency {
-        name: "bevy".to_string(),
+        name: "bevy@0.9".to_string(),
         features: vec![],
     });
 
