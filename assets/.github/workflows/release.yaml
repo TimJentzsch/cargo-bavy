@@ -87,7 +87,7 @@ jobs:
 
   # Build for macOS
   release-macos:
-    runs-on: macOS-latest
+    runs-on: macos-latest
 
     steps:
       - uses: little-core-labs/get-git-tag@v3.0.1
