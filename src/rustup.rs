@@ -32,8 +32,7 @@ pub fn install_target_if_needed(target: &str, ask_user: bool, hidden: bool) -> R
     if ask_user
         && !Confirm::new()
             .with_prompt(format!(
-                "Compilation target `{}` is missing, should I install it for you?",
-                target
+                "Compilation target `{target}` is missing, should I install it for you?",
             ))
             .interact()
             .unwrap()
