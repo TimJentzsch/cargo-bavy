@@ -1,5 +1,9 @@
 # cargo-bavy [![Crates.io](https://img.shields.io/crates/v/cargo-bavy.svg)](https://crates.io/crates/cargo-bavy) [![license: MIT/Apache-2.0](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](https://github.com/TimJentzsch/cargo-bavy/#license)
 
+> [!WARNING]
+>
+> **DEPRECATED**: Use the [bevy_cli](https://github.com/TheBevyFlock/bevy_cli) instead.
+
 A third-party command-line utility for the [Bevy game engine](https://bevyengine.org/).
 
 To not steal the `cargo bevy` command from the official Bevy maintainers, I chose `cargo bavy` instead.
